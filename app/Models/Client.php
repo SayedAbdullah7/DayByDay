@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Http\Controllers\ClientsController;
@@ -34,7 +35,8 @@ class Client extends Model
         'industry_id',
         'company_type',
         'user_id',
-        'client_number'];
+        'client_number'
+    ];
 
     public static function boot()
     {
@@ -128,5 +130,10 @@ class Client extends Model
     public function getSearchableFields(): array
     {
         return $this->searchableFields;
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class);
     }
 }

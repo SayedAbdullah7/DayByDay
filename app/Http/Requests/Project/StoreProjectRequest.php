@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Project;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProjectRequest extends FormRequest
@@ -30,7 +31,12 @@ class StoreProjectRequest extends FormRequest
             'user_assigned_id' => 'required',
             'user_created_id' => '',
             'client_external_id' => 'required',
-            'deadline' => ''
+            'deadline' => '',
+            'unit_type' => 'required',
+            'sub_type' => Rule::requiredIf(function () {
+                $allowedUnitTypes = ['villa', 'apartment', 'office'];
+                return in_array($this->input('unit_type'), $allowedUnitTypes);
+            }),
         ];
     }
 }

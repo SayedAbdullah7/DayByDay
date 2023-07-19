@@ -1,36 +1,42 @@
 <div class="row">
-    <div class="col-md-3">{{ __('Assigned') }}</div>
-    <div class="col-md-9">
-                <span id="assignee-user" class="siderbar-list-value">{{$lead->user->name}}
-                    @if(Entrust::can('lead-update-status'))
-                        <i class="icon ion-md-create"></i>
-                    @endif
-                </span>
-
-        @if(Entrust::can('lead-update-status'))
-            @if(!$lead->isClosed())
-                <span id="assignee-picker" class="hidden">
-                    <form method="POST" action="{{url('leads/updateassign', $lead->external_id)}}">
-                        {{csrf_field()}}
-                        <select name="user_assigned_id"
-                                class="small-form-control bootstrap-select assignee-selectpicker dropdown-user-selecter pull-right"
-                                id="user-search-select" data-live-search="true"
-                                data-style="btn btn-sm dropdown-toggle btn-light"
-                                data-container="body"
-                                data-dropup-auto="false"
-                                onchange="this.form.submit()">
-                            @foreach($users as $key => $user)
-                                <option data-tokens="{{$user}}"
-                                        {{$lead->user_assigned_id == $key ? 'selected' : ''}} value="{{$key}}">{{$user}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </form>
-                </span>
-            @endif
-        @endif
-
+    <div class="row margin-top-10">
+        <div class="col-md-3">interested in :</div>
+        <div class="col-md-9">
+            {{ $lead->interested_in_our?'our units':'other units' }}
+        </div>
     </div>
+        <div class="col-md-3">{{ __('Assigned') }}</div>
+        <div class="col-md-9">
+                    <span id="assignee-user" class="siderbar-list-value">{{$lead->user->name}}
+                        @if(Entrust::can('lead-update-status'))
+                            <i class="icon ion-md-create"></i>
+                        @endif
+                    </span>
+
+            @if(Entrust::can('lead-update-status'))
+                @if(!$lead->isClosed())
+                    <span id="assignee-picker" class="hidden">
+                        <form method="POST" action="{{url('leads/updateassign', $lead->external_id)}}">
+                            {{csrf_field()}}
+                            <select name="user_assigned_id"
+                                    class="small-form-control bootstrap-select assignee-selectpicker dropdown-user-selecter pull-right"
+                                    id="user-search-select" data-live-search="true"
+                                    data-style="btn btn-sm dropdown-toggle btn-light"
+                                    data-container="body"
+                                    data-dropup-auto="false"
+                                    onchange="this.form.submit()">
+                                @foreach($users as $key => $user)
+                                    <option data-tokens="{{$user}}"
+                                            {{$lead->user_assigned_id == $key ? 'selected' : ''}} value="{{$key}}">{{$user}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </span>
+                @endif
+            @endif
+
+        </div>
 </div>
 <div class="row margin-top-10">
     <div class="col-md-3">{{ __('Created at') }}</div>

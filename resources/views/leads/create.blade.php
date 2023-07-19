@@ -47,6 +47,22 @@
                                 <label for="description" class="control-label thin-weight">@lang('Description')</label>
                                 <textarea name="description" id="description" cols="50" rows="10" class="form-control"></textarea>
                             </div>
+
+                            <div class="" style="margin-top: 10px;margin-bottom: 10px">
+                                <label for="" class="control-label thin-weight">Interested in :</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" name="interested_in_our" type="radio" id="inlineCheckbox1" value="1">
+                                    <label class="form-check-label thin-weight" for="inlineCheckbox1">
+                                        our units
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" name="interested_in_our"  type="radio" id="inlineCheckbox2" value="0">
+                                    <label class="form-check-label thin-weight" for="inlineCheckbox2">
+                                        other units
+                                    </label>
+                                </div>
+                            </div>
                             
                     </div>
                 </div>
@@ -63,10 +79,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="projectSelect" style="display: none;">
 
                             <label for="project_external_id" class="control-label thin-weight">@lang('Assign project')</label>
                             <select name="project_external_id" id="project_external_id" class="form-control">
+                                <option value="" selected></option>
                                 @foreach($projects as $project => $projectK)
                                     <option value="{{$project}}">{{$projectK}}</option>
                                 @endforeach
@@ -149,6 +166,19 @@
             formatSubmit: 'HH:i',
             hiddenName: true
         })
+    </script>
+    <script>
+        const inlineCheckbox1 = document.getElementById('inlineCheckbox1');
+        const inlineCheckbox2 = document.getElementById('inlineCheckbox2');
+        const projectSelect = document.getElementById('projectSelect');
+    
+        inlineCheckbox2.addEventListener('change', () => {
+            projectSelect.style.display = 'none';
+        });
+    
+        inlineCheckbox1.addEventListener('change', () => {
+            projectSelect.style.display = 'block';
+        });
     </script>
 @endpush
 

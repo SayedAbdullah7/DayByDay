@@ -23,17 +23,24 @@ class StoreLeadRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required',
-            'phone_1' => 'numeric|required',
+            'phone_1' => 'required',
+            'phone_2' => 'required',
             'lead_source' => 'required',
             'lead_sub_source' => 'required',
             'description' => 'required',
             'status_id' => 'required',
             'user_assigned_id' => 'required',
             'user_created_id' => '',
-            'project_external_id' => 'required',
-            'deadline' => 'required'
+            'deadline' => 'required',
+            'interested_in_our' => 'required',
         ];
+
+        if ($this->input('interested_in_our') == 1) {
+            $rules['project_external_id'] = 'required';
+        }
+
+        return $rules;
     }
 }

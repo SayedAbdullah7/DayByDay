@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use DB;
@@ -19,6 +20,9 @@ use Illuminate\Http\Request;
 use App\Services\Invoice\InvoiceCalculator;
 use App\Http\Requests\Lead\StoreLeadRequest;
 use App\Http\Requests\Lead\UpdateLeadFollowUpRequest;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB as MyBD;
 
 class LeadsController extends Controller
 {
@@ -38,7 +42,7 @@ class LeadsController extends Controller
     public function index()
     {
         return view('leads.index')
-        ->withStatuses(Status::typeOfLead()->get());;
+            ->withStatuses(Status::typeOfLead()->get());;
     }
 
     /**
@@ -47,7 +51,9 @@ class LeadsController extends Controller
      */
     public function leadsJson()
     {
-        $leads = Lead::with(['user', 'creator', 'project', 'status'])->get();
+        $leads = Lead::with(['user', 'creator', 'project', 'status', 'comments' => function ($query) {
+            $query->latest()->take(1);
+        }])->get();
 
         $leads->map(function ($item) {
             return [$item['visible_deadline_date'] = $item['deadline']->format(carbonDate()), $item["visible_deadline_time"] = $item['deadline']->format(carbonTime())];
@@ -78,12 +84,11 @@ class LeadsController extends Controller
      */
     public function store(StoreLeadRequest $request)
     {
-        
+
         if ($request->project_external_id) {
             $project = Project::whereExternalId($request->project_external_id);
-            
         }
-        
+
         $lead = Lead::create(
             [
                 'name' => $request->name,
@@ -97,10 +102,11 @@ class LeadsController extends Controller
                 'status_id' => $request->status_id,
                 'user_created_id' => auth()->id(),
                 'external_id' => Uuid::uuid4()->toString(),
-                'project_id' => $project->id
+                'interested_in_our' => $request->interested_in_our,
+                'project_id' => $request->interested_in_our ? $project->id : null
             ]
         );
-        
+
         event(new \App\Events\LeadAction($lead, self::CREATED));
         session()->flash('flash_message', __('Lead successfully added'));
         return redirect()->route('leads.show', $lead->external_id);
@@ -109,19 +115,19 @@ class LeadsController extends Controller
     public function destroy(Lead $lead, Request $request)
     {
         $deleteOffers = $request->delete_offers ? true : false;
-        if($lead->offers && $deleteOffers) {
+        if ($lead->offers && $deleteOffers) {
             $lead->offers()->delete();
-        } elseif($lead->offers) {
-            foreach($lead->offers as $offer) {
+        } elseif ($lead->offers) {
+            foreach ($lead->offers as $offer) {
                 $offer->update([
                     'source_id' => null,
                     'source_type' => null,
                 ]);
             }
         }
-        
+
         $lead->delete();
-        
+
         session()->flash('flash_message', __('Lead deleted'));
         return redirect()->back();
     }
@@ -129,17 +135,17 @@ class LeadsController extends Controller
     public function destroyJson(Lead $lead, Request $request)
     {
         $deleteOffers = $request->delete_offers ? true : false;
-        if($lead->offers && $deleteOffers) {
+        if ($lead->offers && $deleteOffers) {
             $lead->offers()->delete();
-        } elseif($lead->offers) {
-            foreach($lead->offers as $offer) {
+        } elseif ($lead->offers) {
+            foreach ($lead->offers as $offer) {
                 $offer->update([
                     'source_id' => null,
                     'source_type' => null,
                 ]);
             }
         }
-        
+
         $lead->delete();
 
         return response('OK');
@@ -185,11 +191,11 @@ class LeadsController extends Controller
     public function show($external_id)
     {
         $lead = $this->findByExternalId($external_id);
-        
-        $offers = $lead->offers->map(function($offer) {
+
+        $offers = $lead->offers->map(function ($offer) {
             return new InvoiceCalculator($offer);
         });
-        
+
         return view('leads.show')
             ->withLead($lead)
             ->withOffers($offers)
@@ -237,5 +243,31 @@ class LeadsController extends Controller
     public function findByExternalId($external_id)
     {
         return Lead::whereExternalId($external_id)->firstOrFail();
+    }
+
+    public function import(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('excel_file');
+
+        MyBD::beginTransaction();
+
+        try {
+            Excel::import(new \App\Imports\LeadsImport, $file);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            // return dd($failures);
+            // Handle the validation failures here
+            return redirect()->back();
+        }
+        MyBD::commit();
+
+
+        // Import successful, handle the response as needed
+        session()->flash('flash_message', __('Lead successfully imported'));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Enums\Country;
@@ -27,6 +28,9 @@ use App\Models\Integration;
 use App\Models\Industry;
 use Ramsey\Uuid\Uuid;
 use App\Models\Contact;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class ClientsController extends Controller
 {
@@ -62,8 +66,8 @@ class ClientsController extends Controller
      */
     public function anyData()
     {
-        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address','contacts.name']);
-        return Datatables::of($clients)       
+        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address', 'contacts.name']);
+        return Datatables::of($clients)
             ->addColumn('namelink', '<a href="{{ route("clients.show",[$external_id]) }}">{{$name}}</a>')
             ->addColumn('view', '
                 <a href="{{ route(\'clients.show\', $external_id) }}" class="btn btn-link" >'  . __('View') . '</a>')
@@ -75,7 +79,7 @@ class ClientsController extends Controller
             <input type="submit" name="submit" value="' . __('Delete') . '" class="btn btn-link" onClick="return confirm(\'Are you sure? All the clients tasks, leads, projects, etc will be deleted as well\')"">
             {{csrf_field()}}
             </form>')
-            ->rawColumns(['namelink', 'view','edit', 'delete'])
+            ->rawColumns(['namelink', 'view', 'edit', 'delete'])
             ->make(true);
     }
 
@@ -100,12 +104,12 @@ class ClientsController extends Controller
                     ->format(carbonDate()) : '';
             })
             ->editColumn('status_id', function ($tasks) {
-                return '<span class="label label-success" style="background-color:' . $tasks->status->color . '"> ' .$tasks->status->title . '</span>';
+                return '<span class="label label-success" style="background-color:' . $tasks->status->color . '"> ' . $tasks->status->title . '</span>';
             })
             ->editColumn('assigned', function ($tasks) {
                 return $tasks->assigned_user->name;
             })
-            ->rawColumns(['titlelink','status_id'])
+            ->rawColumns(['titlelink', 'status_id'])
             ->make(true);
     }
 
@@ -127,12 +131,12 @@ class ClientsController extends Controller
                     ->format(carbonDate()) : '';
             })
             ->editColumn('status_id', function ($projects) {
-                return '<span class="label label-success" style="background-color:' . $projects->status->color . '"> ' .$projects->status->title . '</span>';
+                return '<span class="label label-success" style="background-color:' . $projects->status->color . '"> ' . $projects->status->title . '</span>';
             })
             ->editColumn('assigned', function ($projects) {
                 return $projects->assignee->name;
             })
-            ->rawColumns(['titlelink','status_id'])
+            ->rawColumns(['titlelink', 'status_id'])
             ->make(true);
     }
 
@@ -159,7 +163,7 @@ class ClientsController extends Controller
             ->editColumn('assigned', function ($leads) {
                 return $leads->assigned_user->name;
             })
-            ->rawColumns(['titlelink','status_id'])
+            ->rawColumns(['titlelink', 'status_id'])
             ->make(true);
     }
 
@@ -180,7 +184,7 @@ class ClientsController extends Controller
                 return app(MoneyConverter::class, ['money' => $totalPrice])->format();
             })
             ->editColumn('invoice_sent', function ($invoices) {
-                return $invoices->sent_at ? __('yes'): __('no');
+                return $invoices->sent_at ? __('yes') : __('no');
             })
             ->editColumn('status', function ($invoices) {
                 return __(InvoiceStatus::fromStatus($invoices->status)->getDisplayValue());
@@ -206,7 +210,7 @@ class ClientsController extends Controller
      * @param StoreClientRequest $request
      * @return mixed
      */
-    public function store(StoreClientRequest $request)
+    public function store(StoreClientRequest $request, $is_silent = false)
     {
         $client = Client::create([
             'external_id' => Uuid::uuid4()->toString(),
@@ -230,10 +234,11 @@ class ClientsController extends Controller
             'client_id' => $client->id,
             'is_primary' => true
         ]);
-
-        Session()->flash('flash_message', __('Client successfully added'));
-        event(new \App\Events\ClientAction($client, self::CREATED));
-        return redirect()->route('clients.index');
+        if (!$is_silent) {
+            Session()->flash('flash_message', __('Client successfully added'));
+            event(new \App\Events\ClientAction($client, self::CREATED));
+            return redirect()->route('clients.index');
+        }
     }
 
     /**
@@ -340,7 +345,7 @@ class ClientsController extends Controller
             'company_type' => $request->company_type,
             'industry_id' => $request->industry_id,
             'user_id' => $request->user_id,
-            ])->save();
+        ])->save();
 
         $client->primaryContact->fill([
             'name' => $request->name,
@@ -431,5 +436,32 @@ class ClientsController extends Controller
     public function listAllIndustries()
     {
         return Industry::pluck('name', 'id');
+    }
+
+    public function import(Request $request)
+    {
+        // Validate the uploaded file
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        $file = $request->file('excel_file');
+
+        DB::beginTransaction();
+
+        try {
+            Excel::import(new \App\Imports\ClientsImport, $file);
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            // return dd($failures);
+            // Handle the validation failures here
+            return redirect()->back();
+        }
+        DB::commit();
+
+
+        // Import successful, handle the response as needed
+        return redirect()->back()->with('flash_message', 'Clients imported successfully.');
+
     }
 }

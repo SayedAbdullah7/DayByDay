@@ -4,6 +4,43 @@
 @stop
 
 @section('content')
+
+
+<br>
+<div class="modal" tabindex="-1" role="dialog" id="importModal" >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Clients</h5>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('clients.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <input type="file" class="form-control mx-5" name="excel_file" accept=".xlsx, .xls, .csv">
+                    </br>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="btn-group" role="group" aria-label="Basic example" style="margin-bottom: 50px">
+    <button type="button" class="btn btn-primary" id="importModalButton">
+        Import
+    </button>
+    <a class="btn  btn-secondary" href="{{route('clients.export')}}" style="padding:0">
+        <button type="button" class="btn  btn-secondary">Export</button>
+    </a>
+    
+  </div>
+
+
+
+
+
+
     <table class="table table-hover" id="clients-table">
         <thead>
         <tr>
@@ -114,6 +151,19 @@
         }
     });
 </script>
+
+<script>
+    document.getElementById('importModalButton').addEventListener('click', function () {
+        document.getElementById('importModal').classList.add('show');
+    });
+
+    document.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (element) {
+        element.addEventListener('click', function () {
+            document.getElementById('importModal').classList.remove('show');
+        });
+    });
+</script>
+
 @endpush
 
 

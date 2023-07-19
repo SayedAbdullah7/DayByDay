@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Observers\ElasticSearchObserver;
@@ -44,6 +45,7 @@ class Lead extends Model implements Commentable
         'result',
         'deadline',
         'invoice_id',
+        'interested_in_our',
     ];
     protected $dates = ['deadline'];
 
@@ -92,6 +94,7 @@ class Lead extends Model implements Commentable
         return $this->morphMany(Comment::class, 'source');
     }
 
+
     public function getCreateCommentEndpoint(): String
     {
         return route('comments.create', ['type' => 'lead', 'external_id' => $this->external_id]);
@@ -106,7 +109,7 @@ class Lead extends Model implements Commentable
     {
         return $this->morphMany(Activity::class, 'source');
     }
-    
+
     public function appointments()
     {
         return $this->morphMany(Appointment::class, 'source');
@@ -126,7 +129,7 @@ class Lead extends Model implements Commentable
     {
         return $this->status == self::LEAD_STATUS_CLOSED;
     }
-    
+
     public function invoice()
     {
         return $this->morphMany(Invoice::class, 'source');
@@ -146,7 +149,7 @@ class Lead extends Model implements Commentable
 
     public function convertToOrder()
     {
-        if(!$this->canConvertToOrder()) {
+        if (!$this->canConvertToOrder()) {
             return false;
         }
         $invoice = Invoice::create([
@@ -164,7 +167,7 @@ class Lead extends Model implements Commentable
 
     public function canConvertToOrder()
     {
-        if($this->invoice) {
+        if ($this->invoice) {
             return false;
         }
         return true;

@@ -9,6 +9,23 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+
+// Route::get('/import-form', function () {
+//     return view('import')
+// });
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::post('/clients/import', 'ClientsController@import')->name('clients.import');
+Route::post('/leads/import', 'LeadsController@import')->name('leads.import');
+
+
+Route::get('/export', function () {
+    return Excel::download(new \App\Exports\ClientsExport(), 'clients.xlsx');
+})->name('clients.export');
+Route::get('/export-leads', function () {
+    return Excel::download(new \App\Exports\LeadsExport(), 'leads.xlsx');
+})->name('leads.export');
+
 Route::auth();
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::group(['middleware' => ['auth']], function () {
@@ -33,16 +50,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('users', 'UsersController');
 
     /**
-    * Roles
-    */
+     * Roles
+     */
 
     Route::group(['prefix' => 'roles'], function () {
         Route::get('/data', 'RolesController@indexData')->name('roles.data');
         Route::patch('/update/{external_id}', 'RolesController@update');
     });
     Route::resource('roles', 'RolesController', ['except' => [
-            'update'
-        ]]);
+        'update'
+    ]]);
     /**
      * Clients
      */

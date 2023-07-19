@@ -137,6 +137,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\ViewComposerServiceProvider::class,
+
     ],
 
     /*
@@ -191,6 +192,7 @@ return [
         'role' => App\Zizaco\Entrust\Middleware\EntrustRole::class,
         'permission' => App\Zizaco\Entrust\Middleware\EntrustPermission::class,
         'ability' => App\Zizaco\Entrust\Middleware\EntrustAbility::class,
+
     ],
 
 ];

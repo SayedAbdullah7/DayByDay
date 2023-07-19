@@ -36,6 +36,61 @@
         </script>
     <?php } ?>
     <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #importModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #importModal .modal-dialog {
+        /* margin: 0; */
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: auto;
+        max-width: 500px;
+    }
+        #importModal.show {
+        display: flex;
+    }
+    </style>
+    {{-- <style>
+    #importModal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #importModal .modal-dialog {
+        margin: 0;
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: auto;
+        max-width: 500px;
+    }
+
+    #importModal.show {
+        display: flex;
+    }
+</style> --}}
     @stack('style')
 </head>
 <body>
