@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth']], function () {
      * Projects
      */
     Route::group(['prefix' => 'projects'], function () {
+        Route::put('/update/{external_id}', 'ProjectsController@update')->name('projects.update.all');
         Route::get('/data', 'ProjectsController@indexData')->name('projects.index.data');
         Route::patch('/updatestatus/{external_id}', 'ProjectsController@updateStatus')->name('project.update.status');
         Route::patch('/updateassign/{external_id}', 'ProjectsController@updateAssign')->name('project.update.assignee');

@@ -21,7 +21,7 @@
                             @include('clients.tabs.tasktab')
                         </el-tab-pane>
                         <el-tab-pane label="{{ __('Leads') }}" name="leads">
-                            @include('clients.tabs.leadtab')
+                            {{-- @include('clients.tabs.leadtab') --}}
                         </el-tab-pane>
                         @if(Entrust::can('invoice-see'))
                             <el-tab-pane label="{{ __('Invoices') }}" name="invoices">

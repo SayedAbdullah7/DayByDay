@@ -37,7 +37,7 @@
     <?php } ?>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
-        #importModal {
+#        importModal {
         position: fixed;
         top: 0;
         left: 0;
@@ -61,6 +61,10 @@
     }
         #importModal.show {
         display: flex;
+    }
+    .danger {
+        background-color: #dc3545 !important;
+        color: #ffffff !important;
     }
     </style>
     {{-- <style>

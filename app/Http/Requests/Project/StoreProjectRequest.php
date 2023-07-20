@@ -30,7 +30,7 @@ class StoreProjectRequest extends FormRequest
             'status_id' => 'required',
             'user_assigned_id' => 'required',
             'user_created_id' => '',
-            'client_external_id' => 'required',
+            // 'client_external_id' => 'required',
             'deadline' => '',
             'unit_type' => 'required',
             'sub_type' => Rule::requiredIf(function () {

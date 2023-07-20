@@ -37,8 +37,8 @@
                 <h3>{{ __('Leads assigned') }}</h3>
                 <thead>
                 <tr>
-                    <th>{{ __('Title') }}</th>
-                    <th>{{ __('Client') }}</th>
+                    <th>{{ __('name') }}</th>
+                    {{-- <th>{{ __('Client') }}</th> --}}
                     <th>{{ __('Created at') }}</th>
                     <th>{{ __('Deadline') }}</th>
                     <th>
@@ -165,28 +165,30 @@
             });
 
             $(function () {
-              var table = $('#leads-table').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    autoWidth: false,
-                    ajax: '{!! route('users.leaddata', ['id' => $user->id]) !!}',
-                  language: {
-                      url: '{{ asset('lang/' . (in_array(\Lang::locale(), ['dk', 'en']) ? \Lang::locale() : 'en') . '/datatable.json') }}'
-                  },
-                  drawCallback: function(){
-                      var length_select = $(".dataTables_length");
-                      var select = $(".dataTables_length").find("select");
-                      select.addClass("tablet__select");
-                  },
-                    columns: [
+                var table = $('#leads-table').DataTable({
+                        processing: true,
+                        serverSide: true,
+                        autoWidth: false,
+                        ajax: '{!! route('users.leaddata', ['id' => $user->id]) !!}',
+                        
+                    language: {
+                        url: '{{ asset('lang/' . (in_array(\Lang::locale(), ['dk', 'en']) ? \Lang::locale() : 'en') . '/datatable.json') }}'
+                    },
+                    drawCallback: function(){
+                        var length_select = $(".dataTables_length");
+                        var select = $(".dataTables_length").find("select");
+                        select.addClass("tablet__select");
+                    },
+                        columns: [
 
-                        {data: 'titlelink', name: 'title'},
-                        {data: 'client_id', name: 'Client', orderable: false, searchable: false},
-                        {data: 'created_at', name: 'created_at'},
-                        {data: 'deadline', name: 'deadline'},
-                        {data: 'status_id', name: 'status.title', orderable: false},
-                    ]
-                });
+                            {data: 'titlelink', name: 'name'},
+                            // {data: 'client_id', name: 'Client', orderable: false, searchable: false},
+                            {data: 'created_at', name: 'created_at'},
+                            {data: 'deadline', name: 'deadline'},
+                            {data: 'status_id', name: 'status.title', orderable: false},
+                        ],
+                        
+                    });
 
               $('#status-lead').change(function() {
                 selected = $("#status-lead option:selected").val();

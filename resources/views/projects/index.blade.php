@@ -7,10 +7,8 @@
     <table class="table table-hover" id="projects-table">
         <thead>
         <tr>
-
             <th>{{ __('Title') }}</th>
-            <th>{{ __('Client') }}</th>
-            <th>{{ __('Deadline') }}</th>
+            {{-- <th>{{ __('Deadline') }}</th> --}}
             <th>{{ __('Created at') }}</th>
             <th>{{ __('Assigned') }}</th>
             <th>
@@ -100,8 +98,7 @@
                 },
                 columns: [
                     {data: 'titlelink', name: 'title', class: 'title-table-tab'},
-                    {data: 'client', name: 'client', class: 'client-table-tab'},
-                    {data: 'deadline', name: 'deadline'},
+                    // {data: 'deadline', name: 'deadline'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'user_assigned_id', name: 'user_assigned_id'},
                     {data: 'status_id', name: 'status.title', orderable: false},

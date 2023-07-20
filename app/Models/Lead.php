@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Ramsey\Uuid\Uuid;
+use Carbon\Carbon;
 
 /**
  * @property string title
@@ -171,5 +172,12 @@ class Lead extends Model implements Commentable
             return false;
         }
         return true;
+    }
+
+    static function followUpToday()
+    {
+        $todayDate = Carbon::today()->toDateString();
+        // return self::whereDate('deadline', $todayDate)->get();
+        return self::where('user_assigned_id',auth()->user()->id)->whereDate('deadline', $todayDate)->get();
     }
 }

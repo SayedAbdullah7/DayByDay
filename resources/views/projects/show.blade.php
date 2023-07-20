@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="row">
-    @include('partials.clientheader')
+    {{-- @include('partials.clientheader') --}}
     @include('partials.userheader', ['changeUser' => false])
 </div>
 
@@ -10,9 +10,9 @@
     <div class="col-lg-12">
         <div class="project-board-ui">
             <nav class="navbar board text-black ">
-                @if(!$project->isClosed())
+                {{-- @if(!$project->isClosed())
                 <a href="{{route('client.project.task.create', [$client->external_id, $project->external_id])}}" class="btn btn-md btn-brand" style="margin:1em;">@lang('New task')</a>
-            @endif
+            @endif --}}
         </nav>
             <div class="project-board-lists">
                 @foreach($statuses as $status)
@@ -85,8 +85,15 @@
       <div class="col-sm-4">
       <div class="tablet">
           <div class="tablet__head tablet__head__color-brand">
-              <div class="tablet__head-label">
-                  <h3 class="tablet__head-title text-white">@lang('Information')</h3>
+              <div class="tablet__head-label row" style="width:100%">
+              <div>
+              <h3 class="tablet__head-title text-white">@lang('Information')</h3>
+              </div>
+                
+                <div style="width:100%">
+                <a href="{{route('projects.edit',$project->external_id)}}" style="float:right;font-size:18px"><i class="icon ion-md-create" style="color:#fff"></i></a> 
+                </div>
+                    
               </div>
           </div>
           <div class="tablet__body">
@@ -180,7 +187,7 @@
 </div>
 
 
-@if(Entrust::can('project-update-deadline'))
+{{-- @if(Entrust::can('project-update-deadline'))
     <div class="modal fade" id="ModalUpdateDeadline" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -215,7 +222,7 @@
             </div>
         </div>
     </div>
-@endif
+@endif --}}
 <div class="modal fade" id="add-files-modal" tabindex="-1" role="dialog" aria-hidden="true"
          style="display:none;">
     <div class="modal-dialog">

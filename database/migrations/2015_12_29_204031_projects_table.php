@@ -24,7 +24,7 @@ class ProjectsTable extends Migration
             $table->foreign('user_assigned_id')->references('id')->on('users');
             $table->integer('user_created_id')->unsigned();
             $table->foreign('user_created_id')->references('id')->on('users');
-            $table->integer('client_id')->unsigned();
+            $table->integer('client_id')->unsigned()->unsigned();
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
             $table->integer('invoice_id')->unsigned()->nullable();
             $table->foreign('invoice_id')->references('id')->on('invoices');

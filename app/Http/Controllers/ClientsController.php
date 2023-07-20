@@ -66,7 +66,7 @@ class ClientsController extends Controller
      */
     public function anyData()
     {
-        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address', 'contacts.name']);
+        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address', 'contacts.name'])->orderByDesc('clients.id')->get();
         return Datatables::of($clients)
             ->addColumn('namelink', '<a href="{{ route("clients.show",[$external_id]) }}">{{$name}}</a>')
             ->addColumn('view', '
@@ -463,5 +463,23 @@ class ClientsController extends Controller
         // Import successful, handle the response as needed
         return redirect()->back()->with('flash_message', 'Clients imported successfully.');
 
+
+
+
+        try {
+            $import = new \App\Imports\ClientsImport;
+            Excel::import($import, $request->file('excel_file'));
+
+            if ($import->failures()->isNotEmpty()) {
+                $failedRows = $import->failures();
+                $errorMessages = $import->onFailure(new ValidationException($failedRows));
+
+                return back()->with('error', $errorMessages);
+            }
+
+            // return back()->with('success', 'Clients imported successfully.');
+        } catch (\Exception $e) {
+            // return back()->with('error', 'An error occurred during the import process.');
+        }
     }
 }

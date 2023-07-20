@@ -36,7 +36,7 @@
         {{ date(carbonFullDateWithText(), strtotime($project->created_at))}}
     </div>
 </div>
-<div class="row margin-top-10">
+{{-- <div class="row margin-top-10">
     <div class="col-md-3">{{ __('Deadline') }}</div>
     <div class="col-md-9">
                     <span {{Entrust::can('task-update-deadline') ? 'data-toggle=modal data-target=#ModalUpdateDeadline' : ''}}  class="siderbar-list-value {{$project->isCloseToDeadline() ? 'text-danger' : ''}}">{{date(carbonDate(), strTotime($project->deadline))}}
@@ -50,16 +50,16 @@
 
 
     </div>
-</div>
+</div> --}}
 <div class="row margin-top-10">
     <div class="col-md-3">{{ __('Status') }}</div>
     <div class="col-md-9">
-                    <span id="status-text" class="siderbar-list-value">
-                    {{ $project->status->title }}
-                        @if(Entrust::can('task-update-status'))
-                            <i class="icon ion-md-create"></i>
-                        @endif
-                    </span>
+        <span id="status-text" class="siderbar-list-value">
+        {{ $project->status->title }}
+            @if(Entrust::can('task-update-status'))
+                <i class="icon ion-md-create"></i>
+            @endif
+        </span>
         @if(Entrust::can('task-update-status'))
                 <span id="status-picker" class="hidden">
                     <form method="POST" action="{{url('projects/updatestatus', $project->external_id)}}">
@@ -80,6 +80,134 @@
         @endif
     </div>
 </div>
+<div class="row margin-top-10">
+    <div class="col-md-3">unit type:</div>
+    <div class="col-md-9">
+        {{ $project->unit_type }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">sub type:</div>
+    <div class="col-md-9">
+        {{ $project->sub_type }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">bedroom:</div>
+    <div class="col-md-9">
+        {{ $project->bedroom }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">bathroom:</div>
+    <div class="col-md-9">
+        {{ $project->bathroom }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">dressing room:</div>
+    <div class="col-md-9">
+        {{ $project->dressing_room }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">area:</div>
+    <div class="col-md-9">
+        {{ $project->area }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">Building Area:</div>
+    <div class="col-md-9">
+        {{ $project->bua }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">land area:</div>
+    <div class="col-md-9">
+        {{ $project->land_area }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">garage:</div>
+    <div class="col-md-9">
+        {{ $project->garage }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">roof area:</div>
+    <div class="col-md-9">
+        {{ $project->roof_area }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">floor number:</div>
+    <div class="col-md-9">
+        {{ $project->floor_number }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">apartment number:</div>
+    <div class="col-md-9">
+        {{ $project->apartment_number }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">elevator:</div>
+    <div class="col-md-9">
+        {{ $project->elevator }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">view:</div>
+    <div class="col-md-9">
+        {{ $project->view }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">finished status:</div>
+    <div class="col-md-9">
+        {{ $project->finished_status }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">furniture status:</div>
+    <div class="col-md-9">
+        {{ $project->furniture_status }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">comment:</div>
+    <div class="col-md-9">
+        {{ $project->comment }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">payment method:</div>
+    <div class="col-md-9">
+        {{ $project->payment_method }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">installments policy:</div>
+    <div class="col-md-9">
+        {{ $project->installments_policy }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">period:</div>
+    <div class="col-md-9">
+        {{ $project->period }}
+    </div>
+</div>
+<div class="row margin-top-10">
+    <div class="col-md-3">price:</div>
+    <div class="col-md-9">
+        {{ $project->price }}
+    </div>
+</div>
+<!-- Add similar code for any other new columns -->
+
 
 @push('scripts')
     <script>

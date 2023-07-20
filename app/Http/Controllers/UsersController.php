@@ -112,12 +112,12 @@ class UsersController extends Controller
      */
     public function leadData($id)
     {
-        $leads = Lead::with(['status', 'client'])->select(
-            ['id', 'external_id', 'title', 'created_at', 'deadline', 'user_assigned_id', 'client_id', 'status_id']
+        $leads = Lead::with(['status'])->select(
+            ['id', 'external_id', 'name', 'created_at', 'deadline', 'user_assigned_id', 'status_id']
         )
             ->where('user_assigned_id', $id)->get();
         return Datatables::of($leads)
-            ->addColumn('titlelink', '<a href="{{ route("leads.show",[$external_id]) }}">{{$title}}</a>')
+            ->addColumn('titlelink', '<a href="{{ route("leads.show",[$external_id]) }}">{{$name}}</a>')
             ->editColumn('created_at', function ($leads) {
                 return $leads->created_at ? with(new Carbon($leads->created_at))
                     ->format(carbonDate()) : '';
@@ -130,9 +130,9 @@ class UsersController extends Controller
                 return '<span class="label label-success" style="background-color:' . $leads->status->color . '"> ' .
                     $leads->status->title . '</span>';
             })
-            ->editColumn('client_id', function ($tasks) {
-                return $tasks->client->primaryContact->name;
-            })
+            // ->editColumn('client_id', function ($tasks) {
+            //     return $tasks->client->primaryContact->name;
+            // })
             ->rawColumns(['titlelink','status_id'])
             ->make(true);
     }

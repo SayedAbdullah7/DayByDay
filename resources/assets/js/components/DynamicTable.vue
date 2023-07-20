@@ -55,7 +55,7 @@
             <div class="invalid-feedback alert alert-danger " role="alert" id="errorContainer"></div>
         </div>
         <div class="col-xs-4">
-            <lead-sidebar :lead="selectedRow" :hidden="selectedRow" v-on:closed-lead="leadStatusChange"
+            <lead-sidebar  :statuses="statuses" :users="users" :lead="selectedRow" :hidden="selectedRow" v-on:closed-lead="leadStatusChange"
                 v-on:opened-lead="leadStatusChange" v-on:deleted-lead="removeRow($event.external_id)"
                 v-on:closed-sidebar="selectedRow = null" />
         </div>
@@ -69,6 +69,8 @@ export default {
     data() {
         return {
             leads: [],
+            statuses: [],
+            users:[],
             columns: ['name', 'status', 'primary phone', 'last comment', 'lead_source', 'assigned'],
             selectedRow: null,
             search: '',
@@ -167,7 +169,10 @@ export default {
             .get('/leads/data')
             .then(response => {
                 console.log(response)
-                this.leads = response.data
+                this.leads = response.data.leads,
+                this.statuses = response.data.statuses,
+                this.users = response.data.users
+
             }
 
             )

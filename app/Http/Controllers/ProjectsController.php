@@ -26,15 +26,12 @@ class ProjectsController extends Controller
 
     public function indexData()
     {
-        $projects = Project::with(['assignee', 'status', 'client'])->select(
+        $projects = Project::with(['assignee', 'status'])->select(
             ['external_id', 'title', 'created_at', 'deadline', 'user_assigned_id', 'status_id', 'client_id']
         )->get();
 
         return Datatables::of($projects)
             ->addColumn('titlelink', '<a href="{{ route("projects.show",[$external_id]) }}">{{$title}}</a>')
-            ->editColumn('client', function ($projects) {
-                return $projects->client->company_name;
-            })
             ->editColumn('deadline', function ($projects) {
                 return $projects->created_at ? with(new Carbon($projects->deadline))
                     ->format(carbonDate()) : '';
@@ -51,30 +48,30 @@ class ProjectsController extends Controller
                     $projects->status->title . '</span>';
             })
             ->addColumn('view', function ($projects) {
-                return '<a href="' . route("projects.show", $projects->external_id) . '" class="btn btn-link">' . __('View') .'</a>'
-                . '<a data-toggle="modal" data-id="'. route('projects.destroy',$projects->external_id) . '" data-title="'. $projects->title . '" data-target="#deletion" class="btn btn-link">' . __('Delete') .'</a>';
+                return '<a href="' . route("projects.show", $projects->external_id) . '" class="btn btn-link">' . __('View') . '</a>'
+                    . '<a data-toggle="modal" data-id="' . route('projects.destroy', $projects->external_id) . '" data-title="' . $projects->title . '" data-target="#deletion" class="btn btn-link">' . __('Delete') . '</a>';
             })
-            ->rawColumns(['titlelink','view', 'status_id'])
+            ->rawColumns(['titlelink', 'view', 'status_id'])
             ->make(true);
     }
 
     public function index()
     {
         return view('projects.index')
-        ->withStatuses(Status::typeOfProject()->get());
+            ->withStatuses(Status::typeOfProject()->get());
     }
 
     public function destroy(Project $project, Request $request)
     {
         $deleteTasks = $request->delete_tasks ? true : false;
-        if($project->tasks && $deleteTasks) {
+        if ($project->tasks && $deleteTasks) {
             $project->tasks()->delete();
         } else {
             $project->tasks()->update(['project_id' => null]);
         }
-        
+
         $project->delete();
-        
+
         Session()->flash('flash_message', __('Project deleted'));
         return redirect()->back();
     }
@@ -84,27 +81,48 @@ class ProjectsController extends Controller
      * @param StoreTaskRequest $request
      * @return mixed
      */
-    public function store(StoreProjectRequest $request) 
+    public function store(StoreProjectRequest $request)
     {
-        if ($request->client_external_id) {
-            $client = Client::whereExternalId($request->client_external_id);
-        }
+        // if ($request->client_external_id) {
+        //     $client = Client::whereExternalId($request->client_external_id);
+        // }
 
-        if(!$client) {
-            Session()->flash('flash_message', __('Could not find client'));
-            return redirect()->back();
-        }
+        // if (!$client) {
+        //     Session()->flash('flash_message', __('Could not find client'));
+        //     return redirect()->back();
+        // }
 
         $project = Project::create(
             [
                 'title' => $request->title,
                 'description' => clean($request->description),
                 'user_assigned_id' => $request->user_assigned_id,
-                'deadline' => Carbon::parse($request->deadline),
+                // 'deadline' => Carbon::parse($request->deadline),
                 'status_id' => $request->status_id,
                 'user_created_id' => auth()->id(),
                 'external_id' => Uuid::uuid4()->toString(),
-                'client_id' => $client ? $client->id : null,
+                // 'client_id' => $client ? $client->id : null,
+                'unit_type' => $request->unit_type,
+                'sub_type' => $request->sub_type,
+                'bedroom' => $request->bedroom,
+                'bathroom' => $request->bathroom,
+                'dressing_room' => $request->dressing_room,
+                'area' => $request->area,
+                'bua' => $request->bua,
+                'land_area' => $request->land_area,
+                'garage' => $request->garage,
+                'roof_area' => $request->roof_area,
+                'floor_number' => $request->floor_number,
+                'apartment_number' => $request->apartment_number,
+                'elevator' => $request->elevator,
+                'view' => $request->view,
+                'finished_status' => $request->finished_status,
+                'furniture_status' => $request->furniture_status,
+                'comment' => $request->comment,
+                'payment_method' => $request->payment_method,
+                'installments_policy' => $request->payment_method = 'installments' ? $request->installments_policy : null,
+                'period' =>  $request->payment_method = 'installments' && $request->installments_policy == 'period' ?   $request->period : null,
+                'price' => $request->price,
             ]
         );
 
@@ -122,6 +140,63 @@ class ProjectsController extends Controller
         //Hack to make dropzone js work, as it only called with AJAX and not form submit
         return response()->json(['project_external_id' => $project->external_id]);
     }
+    
+        /**
+     * @param StoreTaskRequest $request
+     * @return mixed
+     */
+    public function update($external_id,StoreProjectRequest $request)
+    {
+        $project = Project::whereExternalId($external_id)->first();
+        $project->update(
+            [
+                'title' => $request->title,
+                'description' => clean($request->description),
+                'user_assigned_id' => $request->user_assigned_id,
+                // 'deadline' => Carbon::parse($request->deadline),
+                'status_id' => $request->status_id,
+                // 'user_created_id' => auth()->id(),
+                // 'external_id' => Uuid::uuid4()->toString(),
+                // 'client_id' => $client ? $client->id : null,
+                'unit_type' => $request->unit_type,
+                'sub_type' => $request->sub_type,
+                'bedroom' => $request->bedroom,
+                'bathroom' => $request->bathroom,
+                'dressing_room' => $request->dressing_room,
+                'area' => $request->area,
+                'bua' => $request->bua,
+                'land_area' => $request->land_area,
+                'garage' => $request->garage,
+                'roof_area' => $request->roof_area,
+                'floor_number' => $request->floor_number,
+                'apartment_number' => $request->apartment_number,
+                'elevator' => $request->elevator,
+                'view' => $request->view,
+                'finished_status' => $request->finished_status,
+                'furniture_status' => $request->furniture_status,
+                'comment' => $request->comment,
+                'payment_method' => $request->payment_method,
+                'installments_policy' => $request->payment_method = 'installments' ? $request->installments_policy : null,
+                'period' =>  $request->payment_method = 'installments' && $request->installments_policy == 'period' ?   $request->period : null,
+                'price' => $request->price,
+            ]
+        );
+
+        $insertedExternalId = $project->external_id;
+
+        Session()->flash('flash_message', __('Project successfully updated'));
+        // event(new \App\Events\ProjectAction($project, self::CREATED));
+
+        if (!is_null($request->images)) {
+            foreach ($request->file('images') as $image) {
+                $this->upload($image, $project);
+            }
+        }
+
+        //Hack to make dropzone js work, as it only called with AJAX and not form submit
+        return response()->json(['project_external_id' => $project->external_id]);
+    }
+    
 
     private function upload($image, $project)
     {
@@ -175,6 +250,17 @@ class ProjectsController extends Controller
             ->withStatuses(Status::typeOfProject()->pluck('title', 'id'))
             ->with('filesystem_integration', Integration::whereApiType('file')->first());
     }
+    public function edit($project_external_id)
+    {
+        $project =  Project::whereExternalId($project_external_id);
+        $client= $project->client;
+        return view('projects.create',['project'=>$project])
+            ->withUsers(User::with(['department'])->get()->pluck('nameAndDepartmentEagerLoading', 'id'))
+            ->withClients(Client::pluck('company_name', 'external_id'))
+            ->withClient($client)
+            ->withStatuses(Status::typeOfProject()->pluck('title', 'id'))
+            ->with('filesystem_integration', Integration::whereApiType('file')->first());
+    }
 
     public function show(Project $project)
     {
@@ -206,8 +292,7 @@ class ProjectsController extends Controller
             ->withCollaborators($collaborators->unique())
             ->withUsers(User::with(['department'])->get()->pluck('nameAndDepartmentEagerLoading', 'id'))
             ->withFiles($project->documents)
-            ->with('filesystem_integration', Integration::whereApiType('file')->first());
-        ;
+            ->with('filesystem_integration', Integration::whereApiType('file')->first());;
     }
 
     public function updateStatus($external_id, Request $request)
@@ -233,7 +318,7 @@ class ProjectsController extends Controller
     {
         $project = Project::with('assignee')->whereExternalId($external_id)->first();
 
-        $user_assigned_id= $request->user_assigned_id;
+        $user_assigned_id = $request->user_assigned_id;
 
         $project->user_assigned_id = $user_assigned_id;
         $project->save();

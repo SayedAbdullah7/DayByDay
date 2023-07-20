@@ -15,7 +15,7 @@ class AddColumnsToLeadsTable extends Migration
     {
         Schema::table('leads', function (Blueprint $table) {
             $table->boolean('interested_in_our');
-            $table->bigInteger('project_id')->nullable()->change();
+            // $table->bigInteger('project_id')->nullable()->change();
         });
     }
 

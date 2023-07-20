@@ -25,7 +25,7 @@ class CreateLeadsTable extends Migration
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->integer('user_assigned_id')->unsigned();
             $table->foreign('user_assigned_id')->references('id')->on('users');
-            $table->integer('project_id')->unsigned();
+            $table->integer('project_id')->unsigned()->nullable();
             $table->foreign('project_id')->references('id')->on('projects');
             $table->integer('user_created_id')->unsigned();
             $table->foreign('user_created_id')->references('id')->on('users');

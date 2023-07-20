@@ -58,37 +58,66 @@
                                 <div class="col-xs-12 movedown">
                                     <p>{{lead.title}}</p>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-4">
                                     {{trans('Deadline')}}
                                 </div>
-                                <div class="col-xs-9">
+                                <div class="col-xs-8">
                                     <p>{{lead.visible_deadline_date}} {{lead.visible_deadline_time}}</p>
                                 </div>
-                                <div class="col-xs-3">
+                                <br>
+                                <div class="col-xs-4">
                                     {{trans('Project')}}
                                 </div>
-                                <div class="col-xs-9">
-                                    <p>{{lead.project.title}}</p>
+                                <div class="col-xs-8">
+                                    <p  v-if="lead.project" >{{ lead.project.title }}</p>
+                                    <p v-else> ... </p>
                                 </div>
-                                <div class="col-xs-3">
+                                <br>
+                                <br>
+                                <div class="col-xs-4">
                                     {{trans('Status')}}
                                 </div>
-                                <div class="col-xs-9">
-                                    <p>{{lead.status.title}}</p>
+                                <div class="col-xs-8" v-if="!editMode.statusTitle">
+                                    <p style="display: inline-table;">{{ lead.status.title }}</p>
+                                    <span @click="editField('statusTitle')" class="edit-icon">✎</span>
                                 </div>
-                                <div class="col-xs-3">
+                                <div class="col-xs-8" v-else>
+                                    <select v-model="lead.status.id">
+                                        <option v-for="status in statuses" :key="status.id" :value="status.id" :selected="lead.status.id === status.id">{{ status.title }}</option>
+                                    </select>
+                                    <span @click="saveField('statusTitle')" class="save-icon">✔</span>
+                                    <span @click="cancelEditField('statusTitle')" class="cancel-icon">✖</span>
+                                </div>
+                                <div class="col-xs-4">
+                                    {{trans('Assignee user')}}
+                                </div>
+                                <div class="col-xs-8" v-if="!editMode.assigneeUser">
+                                    <p style="display: inline-table;">{{ lead.user.name }}</p>
+                                    <span @click="editField('assigneeUser')" class="edit-icon">✎</span>
+                                </div>
+                                <div class="col-xs-8" v-else>
+                                    <select v-model="lead.user.id">
+                                        <option v-for="user in users" :key="user.name" :value="user.id" :selected="lead.user.id == user.id">{{ user.name }}</option>
+                                    </select>
+                                    <span @click="saveField('assigneeUser')" class="save-icon">✔</span>
+                                    <span @click="cancelEditField('assigneeUser')" class="cancel-icon">✖</span>
+                                </div>
+                                <br>
+                                <div class="col-xs-4 " >
                                     {{trans('Created by')}}
                                 </div>
-                                <div class="col-xs-9">
-                                    <p>{{lead.creator.name}}</p>
+                                <div class="col-xs-8">
+                                    <span>{{ lead.creator.name }}</span>
                                 </div>
+
+
                             </div>
                         </div>
                 </div>
             </div>
         </div>
     <!--Client-->
-    <div class="tablet">
+    <div class="tablet" v-if="lead.project">
         <div class="tablet__head">
             <div class="tablet__head-label">
                 <h3 class="tablet__head-title">{{trans('Project')}}</h3>
@@ -154,7 +183,11 @@ export default {
         return {
             confirmModal: false,
             action: null,
-            modalTitle: null
+            editMode: {
+                projectTitle: false,
+                statusTitle: false,
+                assigneeUser: false,
+            },
         }
     },
   methods: {
@@ -200,7 +233,77 @@ export default {
     },
     showOfferModal() {
         $('#create-offer').modal('show');
-    }
+    },
+    editField(field) {
+      this.editMode[field] = true;
+    },
+    // Method to save changes to a field
+    saveField(field) {
+      this.editMode[field] = false;
+      if(field == 'statusTitle'){
+        var updatedData = {
+            field: field,
+            external_id:this.lead.external_id,
+            status_id: this.lead.status.id, // Pass the selected value
+            jsonResponse : true
+        };
+        var url= '/leads/updatestatus/'+this.lead.external_id;
+      }else{
+        if(!this.lead.user.id){
+            return;
+        }
+        var updatedData = {
+            field: field,
+            external_id:this.lead.external_id,
+            user_assigned_id: this.lead.user.id, // Pass the selected value
+            jsonResponse : true
+        };
+        var url= '/leads/updateassign/'+this.lead.external_id;
+        console.log(updatedData);
+      }
+        console.log(updatedData);
+        // + this.lead.external_id,
+        axios.post(url, updatedData)
+        .then(response => {
+          // Handle the response from the backend if necessary
+          console.log(response);
+          if(response.status){
+            if(field == 'statusTitle'){
+                const selectedStatus = this.statuses.find(status => status.id === this.lead.status.id);
+                this.lead.status.title = selectedStatus.title;
+                this.lead.status = selectedStatus;
+            }else{
+                const selectedUser = this.users.find(user => user.id === this.lead.user.id);
+                this.lead.user = selectedUser;
+            }
+            this.editMode[field] = false;
+          }
+
+        })
+        .catch(error => {
+            console.log('error');
+            if (error.response) {
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+
+                console.log(error.request);
+            } else {
+                console.log('Error', error.message);
+            }
+        });
+
+
+        
+      // Save changes to the server (you might want to use axios.post to update the data)
+    },
+
+    // Method to cancel editing and revert to original value
+    cancelEditField(field) {
+      this.editMode[field] = false;
+      // Revert to original value (if necessary)
+    },
   },
   components: {
         ConfirmModal,
@@ -209,6 +312,8 @@ export default {
   props: {
       lead: {},
       hidden: false,
+      statuses: {},
+      users:{}
   },
     
 }
@@ -256,4 +361,13 @@ export default {
     .no-padding {
         padding-left: 0% !important;
     }
+</style>
+<style>
+/* Add your CSS styles here */
+.edit-icon,
+.save-icon,
+.cancel-icon {
+  cursor: pointer;
+  margin-left: 5px;
+}
 </style>
