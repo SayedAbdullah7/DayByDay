@@ -16,7 +16,7 @@
             <div class="modal-body">
                 <form action="{{ route('clients.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-
+                    <a href="/templates/clients.xlsx"  class="btn btn-info" style="margin-bottom:10px">Download template</a>
                     <input type="file" class="form-control mx-5" name="excel_file" accept=".xlsx, .xls, .csv">
                     </br>
                     <button type="submit" class="btn btn-primary">Import</button>
@@ -38,15 +38,12 @@
 
 
 
-
-
-
     <table class="table table-hover" id="clients-table">
         <thead>
         <tr>
             <th>{{ __('Name') }}</th>
-            <th>{{ __('Vat') }}</th>
-            <th>{{ __('Address') }}</th>
+            <th>{{ __('primary number') }}</th>
+            <th>{{ __('secondary number') }}</th>
             <th class="action-header"></th>
             <th class="action-header"></th>
             <th class="action-header"></th>
@@ -85,9 +82,8 @@
             autoWidth: false,
             columns: [
                 {data: 'namelink', name: 'name'},
-                {data: 'vat', name: 'vat'},
-                {data: 'address', name: 'address'},
-
+                {data: 'primary_number', name: 'primary_number'},
+                {data: 'secondary_number', name: 'secondary_number'},
                 { data: 'view', name: 'view', orderable: false, searchable: false, class:'fit-action-delete-th table-actions'},
 
                 @if(Entrust::can('client-update'))

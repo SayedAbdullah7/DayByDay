@@ -8,6 +8,7 @@
                             <h5 class="modal-title">Import Clients</h5>
                         </div>
                         <div class="modal-body">
+                            <a href="/templates/leads.xlsx"  class="btn btn-info" style="margin-bottom:10px">Download template</a>
                             <form @submit.prevent="importClients" enctype="multipart/form-data">
                                 <input type="file" class="form-control mx-5" name="excel_file" accept=".xlsx, .xls, .csv" />
                                 <br>
@@ -52,7 +53,7 @@
                 </table>
 
             </div>
-            <div class="invalid-feedback alert alert-danger " role="alert" id="errorContainer"></div>
+            <!-- <div class="invalid-feedback alert alert-danger " role="alert" id="errorContainer"></div> -->
         </div>
         <div class="col-xs-4">
             <lead-sidebar  :statuses="statuses" :users="users" :lead="selectedRow" :hidden="selectedRow" v-on:closed-lead="leadStatusChange"

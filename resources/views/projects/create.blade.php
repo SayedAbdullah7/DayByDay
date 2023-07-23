@@ -210,7 +210,7 @@
                         
                         {{csrf_field()}}
                         <div class="form-group">
-                            <input type="submit" class="btn btn-md btn-brand movedown" id="createProject" value=" {{isset($project)?__('update project'):__('Create project')}}">
+                            <input type="submit" class="btn btn-md btn-brand movedown" id="createProject" disabled='disabled' value=" {{isset($project)?__('update project'):__('Create project')}}">
                         </div>
                     </div>
                 </div>
@@ -311,11 +311,13 @@
 
                             var errors = jqXHR.responseJSON.errors;
                             console.log(errors);
-                            $('#errorContainer').html('');
+                            const validationMsg = document.getElementById('validationMsg');
+                            validationMsg.style.display = '';
+                            $('#validationMsg').html('');
                             $.each(errors, function(key, values) {
                                 console.log(values);
                                 $.each(values, function(index, value) {
-                                    $('#errorContainer').append('<li>' + value + '</li>');
+                                    $('#validationMsg').append('<li>' + value + '</li>');
                                 });
                             });
                             // if (jqXHR.responseJSON.errors.title != undefined) {

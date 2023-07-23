@@ -24,30 +24,25 @@
                             <div class="form-group form-check-inline">
                                 <label for="lead_source" class="control-label thin-weight">@lang('Lead Source')</label>
                                 <select name="lead_source" id="lead_source" class="form-control">
-                                    <option selected value="facebook">Campaign</option>
-                                    <option value="instagram">Exipition</option>
-                                    <option value="whatsapp">Brokers Company</option>
-                                    <option value="twitter">Call's</option>
-                                    <option value="twitter">Adverstising (Bill Board)</option>
-                                    <option value="twitter">Referd to Our Company</option>
-                                    <option value="twitter">Direct Customers</option>
+                                    <option selected value="campaign">Campaign</option>
+                                    <option value="exipition">Exipition</option>
+                                    <option value="brokers company">Brokers Company</option>
+                                    <option value="calls">Call's</option>
+                                    <option value="adverstising">Adverstising (Bill Board)</option>
+                                    <option value="referd to our company">Referd to Our Company</option>
+                                    <option value="direct customers">Direct Customers</option>
                                 </select>
                             </div>
                             <div class="form-inline form-check-inline">
                                 <label for="lead_sub_source" class="control-label thin-weight">@lang('Lead Sub source')</label>
                                 <select name="lead_sub_source" id="lead_sub_source" class="form-control">
-                                    <option selected value="post">Facebook</option>
-                                    <option value="share">Instagram</option>
-                                    <option value="comment">Snapchat</option>
-                                    <option value="mention">Tick Tok</option>
-                                    <option value="mention">WhatsApp</option>
+                                    <option selected value="facebook">Facebook</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="snapchat">Snapchat</option>
+                                    <option value="tick tok">Tick Tok</option>
+                                    <option value="whatsApp">WhatsApp</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="description" class="control-label thin-weight">@lang('Description')</label>
-                                <textarea name="description" id="description" cols="50" rows="10" class="form-control"></textarea>
-                            </div>
-
                             <div class="" style="margin-top: 10px;margin-bottom: 10px">
                                 <label for="" class="control-label thin-weight">Interested in :</label>
                                 <div class="form-check form-check-inline">
@@ -63,6 +58,12 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="description" class="control-label thin-weight">@lang('Description')</label>
+                                <textarea name="description" id="description" cols="50" rows="10" class="form-control"></textarea>
+                            </div>
+
+
                             
                     </div>
                 </div>
@@ -101,7 +102,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="deadline" class="control-label thin-weight">@lang('Sales Stage')</label>
+                            <label for="status" class="control-label thin-weight">@lang('Sales Stage')</label>
                             <select name="status_id" id="status" class="form-control">
                                 @foreach($statuses as $status => $statusK)
                                     <option value="{{$status}}">{{$statusK}}</option>
@@ -110,7 +111,7 @@
                         </div>
                         {{csrf_field()}}
                         <div class="form-group">
-                            <input type="submit" class="btn btn-md btn-brand movedown" id="createTask" value="{{__('Create lead')}}">
+                            <input type="submit" class="btn btn-md btn-brand movedown" id="submit" value="{{__('Create lead')}}" disabled='disabled' >
                         </div>
                     </div>
                 </div>

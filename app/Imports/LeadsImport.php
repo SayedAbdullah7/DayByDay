@@ -29,7 +29,7 @@ class LeadsImport implements ToModel, WithHeadingRow, SkipsEmptyRows
         $project_external_id =  Project::where('title', $row['project'])->first()->external_id ?? null;
         $status_id =  Status::where('title', $row['status'])->first()->id ?? null;
         $user_assigned_id =  User::where('name', $row['user'])->first()->id ?? null;
-        $user_created_id =  User::where('name', $row['created_by'])->first()->id ?? null;
+        // $user_created_id =  User::where('name', $row['created_by'])->first()->id ?? null;
         $interested_in_our = $row['interested_in'] == 'our units' ? 1 : 0;
         $datetime = Carbon::parse($row['deadline']);
         $time = $datetime->format('H:i');
@@ -43,7 +43,7 @@ class LeadsImport implements ToModel, WithHeadingRow, SkipsEmptyRows
             'description' => $row['description'],
             'status_id' => $status_id,
             'user_assigned_id' => $user_assigned_id,
-            'user_created_id' => $user_created_id,
+            // 'user_created_id' => $user_created_id,
             'deadline' => $date,
             'contact_time' => $time,
             'interested_in_our' => $interested_in_our,

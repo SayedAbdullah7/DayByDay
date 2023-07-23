@@ -26,7 +26,7 @@ class ClientsImport implements ToModel, WithHeadingRow,SkipsEmptyRows
     {
         $this->row++;
         // return $row;
-        $industry_id = Industry::where('name', $row['industry'])->first()->id??null;
+        // $industry_id = Industry::where('name', $row['industry'])->first()->id??null;
         $user_id =  User::where('name', $row['user'])->first()->id??null;
         $data = [
             'name' => $row['name'],
@@ -34,13 +34,13 @@ class ClientsImport implements ToModel, WithHeadingRow,SkipsEmptyRows
             'primary_number' =>  $row['primary_number'],
             'secondary_number' =>  $row['secondary_number'],
 
-            'vat' =>  $row['vat'],
-            'company_name' => $row['company_name'],
-            'address' =>  $row['address'],
-            'zipcode' =>  $row['zipcode'],
-            'city' =>  $row['city'],
-            'company_type' =>  $row['company_type'],
-            'industry_id' =>  $industry_id,
+            // 'vat' =>  $row['vat'],
+            // 'company_name' => $row['company_name'],
+            // 'address' =>  $row['address'],
+            // 'zipcode' =>  $row['zipcode'],
+            // 'city' =>  $row['city'],
+            // 'company_type' =>  $row['company_type'],
+            // 'industry_id' =>  $industry_id,
             'user_id' =>  $user_id,
 
         ];

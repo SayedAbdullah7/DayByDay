@@ -12,7 +12,7 @@ class ClientObserver
     {
         $this->relations = [
             'tasks',
-            'leads',
+            // 'leads',
             'documents',
             'projects',
             'invoices',

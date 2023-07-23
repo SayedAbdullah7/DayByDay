@@ -19,13 +19,13 @@ class CreateClientsTable extends Migration
             $table->string('address')->nullable();
             $table->string('zipcode')->nullable();
             $table->string('city')->nullable();
-            $table->string('company_name');
+            $table->string('company_name')->nullable();
             $table->string('vat')->nullable();
             $table->string('company_type')->nullable();
             $table->bigInteger('client_number')->nullable();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('industry_id')->unsigned();
+            $table->integer('industry_id')->unsigned()->nullable();
             $table->foreign('industry_id')->references('id')->on('industries');
             $table->softDeletes();
             $table->timestamps();

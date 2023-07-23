@@ -1,8 +1,8 @@
 <div class="row">
-    <div class="row margin-top-10">
-        <div class="col-md-3">interested in :</div>
-        <div class="col-md-9">
-            {{ $lead->interested_in_our?'our units':'other units' }}
+    <div class="col-md-12 margin-top-10">
+        <div class="col-md-4" style=padding:0>interested in:</div>
+        <div class="col-md-8">
+            {{ $lead->interested_in_our ? 'our units' : 'other units' }}
         </div>
     </div>
         <div class="col-md-3">{{ __('Assigned') }}</div>

@@ -73,11 +73,11 @@ class Client extends Model
             ->orderBy('created_at', 'desc');
     }
 
-    public function leads()
-    {
-        return $this->hasMany(Lead::class, 'client_id', 'id')
-            ->orderBy('created_at', 'desc');
-    }
+    // public function leads()
+    // {
+    //     return $this->hasMany(Lead::class, 'client_id', 'id')
+    //         ->orderBy('created_at', 'desc');
+    // }
 
     public function documents()
     {

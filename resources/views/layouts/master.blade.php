@@ -239,16 +239,10 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="global-heading">@yield('heading')</h1>
-                    @yield('content')
-                </div>
-            </div>
+        <div id="validationMsg" class="alert alert-danger" style='margin:10px;display:none'>
         </div>
         @if($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger" style='margin:10px'>
                 @foreach($errors->all() as $error)
                     <p>{{ $error }}</p>
                 @endforeach
@@ -262,6 +256,15 @@
         @if(Session::has('flash_message'))
             <message message="{{ Session::get('flash_message') }}" type="success"></message>
         @endif
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="global-heading">@yield('heading')</h1>
+                    @yield('content')
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- /#page-content-wrapper -->
@@ -297,7 +300,35 @@
     });
 </script>
 @endif
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOMContentLoaded');
+            const button = document.querySelector('input[type="submit"]');
+            const form = document.querySelector('form');
+            if(button && form){
+                button.disabled=false;
+                console.log(button);
+                console.log(form);
+                // button.value = 'sss';
+                form.addEventListener('submit', (event) => {
+                        button.value = 'submit';
+                    console.log('submit');
+                    button.disabled=true;
+                    console.log(button);
+                    button.value="wait...";
+                });
+            }
+
+            // button.addEventListener('click', (event) => {
+            //     button.value = 'click';
+
+            //     console.log('click');
+            // });
+
+    });
+</script>
 @stack('scripts')
+
 <script>
     window.trans = <?php
     // copy all translations from /resources/lang/CURRENT_LOCALE/* to global JS variable

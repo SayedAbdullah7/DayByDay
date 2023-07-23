@@ -64,7 +64,7 @@
     ?>
 <h1>Create Client</h1>
 <hr>
-    {!! Form::open([
+    {{-- {!! Form::open([
             'url' => '/clients/create/cvrapi'
 
             ]) !!}
@@ -92,7 +92,7 @@
     <hr>
     @endif
 
-    {!!Form::close()!!}
+    {!!Form::close()!!} --}}
 
     {!! Form::open([
             'route' => 'clients.store',
@@ -102,6 +102,5 @@
     @include('clients.form', ['submitButtonText' => __('Create New Client')])
 
     {!! Form::close() !!}
-
 
 @stop

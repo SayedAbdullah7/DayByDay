@@ -14,6 +14,8 @@
 //     return view('import')
 // });
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\File;
 
 Route::post('/clients/import', 'ClientsController@import')->name('clients.import');
 Route::post('/leads/import', 'LeadsController@import')->name('leads.import');
@@ -26,6 +28,14 @@ Route::get('/export-leads', function () {
     return Excel::download(new \App\Exports\LeadsExport(), 'leads.xlsx');
 })->name('leads.export');
 
+Route::get('/templates/{file}', function ($file) {
+    $filePath = public_path('templates/' . $file);
+    if (!File::exists($filePath)) {
+        abort(404);
+    }
+
+    return Response::download($filePath, $file);
+})->name('template.download');
 Route::auth();
 Route::get('/logout', 'Auth\LoginController@logout');
 Route::group(['middleware' => ['auth']], function () {

@@ -66,7 +66,7 @@ class ClientsController extends Controller
      */
     public function anyData()
     {
-        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address', 'contacts.name'])->orderByDesc('clients.id')->get();
+        $clients = Client::join('contacts', 'clients.id', '=', 'contacts.client_id')->select(['clients.external_id', 'clients.company_name', 'clients.vat', 'clients.address', 'contacts.name', 'contacts.primary_number', 'contacts.secondary_number'])->orderByDesc('clients.id')->get();
         return Datatables::of($clients)
             ->addColumn('namelink', '<a href="{{ route("clients.show",[$external_id]) }}">{{$name}}</a>')
             ->addColumn('view', '
@@ -371,6 +371,7 @@ class ClientsController extends Controller
             $client->delete();
             Session()->flash('flash_message', __('Client successfully deleted'));
         } catch (\Exception $e) {
+            return $e;
             Session()->flash('flash_message_warning', __('Client could not be deleted, contact Daybyday support'));
         }
 

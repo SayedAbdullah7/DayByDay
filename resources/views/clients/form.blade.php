@@ -38,7 +38,7 @@
     </div>
 </div>
 </div>
-<hr>
+{{-- <hr>
 
 <div class="col-sm-3">
     <p class="calm-header">{{ __('Business information') }}</p>
@@ -109,8 +109,8 @@
         ['class' => 'form-control ui search selection top right pointing search-select',
         'id' => 'search-select'])
     !!}
-</div>
-</div>
+</div> --}}
+{{-- </div> --}}
 <hr>
 <div class="col-sm-3">
     <p class="calm-header">{{ __('User') }}</p>
@@ -124,7 +124,7 @@
 </div>
 <hr>
 <div class="col-sm-10">
-    {!! Form::submit($submitButtonText, ['class' => 'btn btn-md btn-brand', 'id' => 'submitClient']) !!}
+    {!! Form::submit($submitButtonText, ['class' => 'btn btn-md btn-brand', 'id' => 'submitClient','disabled'=>'disabled']) !!}
 </div>
 <div class="col-sm-2">
 
