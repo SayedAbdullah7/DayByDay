@@ -227,7 +227,6 @@
     <div class="alert alert-danger client-alert" style="display: none;">
         {{__("Client is required")}}
     </div> --}}
-    <div class="invalid-feedback alert alert-danger " role="alert" id="errorContainer"></div>
 
 @stop
 

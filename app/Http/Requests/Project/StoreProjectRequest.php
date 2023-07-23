@@ -32,6 +32,8 @@ class StoreProjectRequest extends FormRequest
             'user_created_id' => '',
             // 'client_external_id' => 'required',
             'deadline' => '',
+            'price' => 'required',
+            'payment_method' => 'required',
             'unit_type' => 'required',
             'sub_type' => Rule::requiredIf(function () {
                 $allowedUnitTypes = ['villa', 'apartment', 'office'];
