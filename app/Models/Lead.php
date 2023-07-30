@@ -94,7 +94,10 @@ class Lead extends Model implements Commentable
     {
         return $this->morphMany(Comment::class, 'source');
     }
-
+    public function lastComment()
+    {
+        return $this->morphOne(Comment::class, 'source')->latest();
+    }
 
     public function getCreateCommentEndpoint(): String
     {
@@ -178,6 +181,6 @@ class Lead extends Model implements Commentable
     {
         $todayDate = Carbon::today()->toDateString();
         // return self::whereDate('deadline', $todayDate)->get();
-        return self::where('user_assigned_id',auth()->user()->id)->whereDate('deadline', $todayDate)->get();
+        return self::where('user_assigned_id', auth()->user()->id)->whereDate('deadline', $todayDate)->get();
     }
 }

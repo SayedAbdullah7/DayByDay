@@ -8,7 +8,8 @@
                             <h5 class="modal-title">Import Clients</h5>
                         </div>
                         <div class="modal-body">
-                            <a href="/templates/leads.xlsx"  class="btn btn-info" style="margin-bottom:10px">Download template</a>
+                            <a href="/templates/leads.xlsx" class="btn btn-info" style="margin-bottom:10px">Download
+                                template</a>
                             <form @submit.prevent="importClients" enctype="multipart/form-data">
                                 <input type="file" class="form-control mx-5" name="excel_file" accept=".xlsx, .xls, .csv" />
                                 <br>
@@ -56,9 +57,9 @@
             <!-- <div class="invalid-feedback alert alert-danger " role="alert" id="errorContainer"></div> -->
         </div>
         <div class="col-xs-4">
-            <lead-sidebar  :statuses="statuses" :users="users" :lead="selectedRow" :hidden="selectedRow" v-on:closed-lead="leadStatusChange"
-                v-on:opened-lead="leadStatusChange" v-on:deleted-lead="removeRow($event.external_id)"
-                v-on:closed-sidebar="selectedRow = null" />
+            <lead-sidebar :statuses="statuses" :users="users" :lead="selectedRow" :hidden="selectedRow"
+                v-on:closed-lead="leadStatusChange" v-on:opened-lead="leadStatusChange"
+                v-on:deleted-lead="removeRow($event.external_id)" v-on:closed-sidebar="selectedRow = null" />
         </div>
     </div>
 </template>
@@ -71,7 +72,7 @@ export default {
         return {
             leads: [],
             statuses: [],
-            users:[],
+            users: [],
             columns: ['name', 'status', 'primary phone', 'last comment', 'lead_source', 'assigned'],
             selectedRow: null,
             search: '',
@@ -171,8 +172,8 @@ export default {
             .then(response => {
                 console.log(response)
                 this.leads = response.data.leads,
-                this.statuses = response.data.statuses,
-                this.users = response.data.users
+                    this.statuses = response.data.statuses,
+                    this.users = response.data.users
 
             }
 
@@ -193,8 +194,8 @@ export default {
         },
         getLastComment: function () {
             return function (lead) {
-                if (lead.comments.length > 0) {
-                    const lastComment = lead.comments[lead.comments.length - 1];
+                if (lead.last_comment) {
+                    const lastComment = lead.last_comment;
                     const commentContent = lastComment.description.replace(/<[^>]+>/g, ""); // Remove HTML tags
                     var truncatedContent = commentContent.substring(0, 40); // Limit string to 20 characters
                     if (commentContent.length > 40) {

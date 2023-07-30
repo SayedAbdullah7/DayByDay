@@ -51,9 +51,7 @@ class LeadsController extends Controller
      */
     public function leadsJson()
     {
-        $leads = Lead::with(['user', 'creator', 'project', 'status', 'comments' => function ($query) {
-            $query->latest()->take(1);
-        }])->get();
+        $leads = Lead::with(['user', 'creator', 'project', 'status', 'lastComment'])->get();
 
         $leads->map(function ($item) {
             return [$item['visible_deadline_date'] = $item['deadline']->format(carbonDate()), $item["visible_deadline_time"] = $item['deadline']->format(carbonTime())];
@@ -66,7 +64,7 @@ class LeadsController extends Controller
             'users' => $users->toArray(),
         ];
         return json_encode($data);
-        
+
         return $leads->toJson();
     }
 
@@ -166,9 +164,9 @@ class LeadsController extends Controller
         $input = $request->get('user_assigned_id');
         $input = array_replace($request->all());
         $lead->fill($input)->save();
-        if($request->jsonResponse){
-            return response()->json(['status'=>true,'msg'=>'success']);
-        }   
+        if ($request->jsonResponse) {
+            return response()->json(['status' => true, 'msg' => 'success']);
+        }
         event(new \App\Events\LeadAction($lead, self::UPDATED_ASSIGN));
         Session()->flash('flash_message', __('New user is assigned'));
         return redirect()->back();
@@ -237,8 +235,8 @@ class LeadsController extends Controller
         } else {
             $lead->fill($request->all())->save();
         }
-        if($request->jsonResponse){
-            return response()->json(['status'=>true,'msg'=>'success']);
+        if ($request->jsonResponse) {
+            return response()->json(['status' => true, 'msg' => 'success']);
         }
         event(new \App\Events\LeadAction($lead, self::UPDATED_STATUS));
         Session()->flash('flash_message', __('Lead status updated'));
